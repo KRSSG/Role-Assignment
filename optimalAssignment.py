@@ -1,5 +1,5 @@
 from itertools import combinations
-from itertools import permutaions
+from itertools import permutations
 
 """
 botL --> list of available botID's
@@ -8,7 +8,7 @@ taskD --> Dictionary with keys as taks names and values as the position to go ( 
 
 class optimalAssignment(object):
 	def __init__(self, state, botL, taskD):
-		self.Mat = self.assign( state, botL, taskD)
+		self.Mat = self.assign(state, botL, taskD)
 		
 	def assign( self, state, botL, taskD):
 		Mat = {}
