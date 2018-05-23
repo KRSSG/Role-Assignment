@@ -2,8 +2,12 @@ import enum
 
 class gameAnalyzer():
     class staticPlays(enum.Enum):
-        FreeHomeKick = 1
-        FreeAwayKick = 2
+        FreeHomeKick = 0
+        FreeAwayKick = 1
+        IndirectHomeKick = 2
+        IndirectAwayKick = 3
+        HomePenalty = 4
+        AwayPenalty = 5
 
     def __init__(self, tasklist, state, play=None):
         # tasklist -> list of available tactics
@@ -12,34 +16,59 @@ class gameAnalyzer():
         self.tasklist = tasklist
         self.state = state
         self.play = play
+        self.home_yellow = state.isteamyellow
 
     def availableBots():
         # return list of available bots using state
+        bots = []
+        for i in xrange(len(state.homePos)):
+            if state.homeDetected[i]:
+                bots.append(i)
+
+        return bots
 
     def targetPoints(tasks):
         # input -> list of tasks(Tactics)
         # ouput -> a dict, keyword -> tasks name, value -> their target point
 
-        # here make instance of tactics and call their target ponint function
-        # we are assuming that tactics have this function
-        # Example : TReceiver = TReceiver(agrs)
-        #           ReceiverPos = TReceiver.getTargetPos()
+        #assuming class names for tactics are TBallHandler , TMarker etc.
+        task_dict = {'Defender':TDefender,'BallHandler':TBallHandler,'Marker':TMarker,'Supporter':TSupporter,'Attacker':TAttacker,'Distractor':TDistractor,'Clearer':TClearer}
+        required_task_dict = {}
+        for i in xrange(len(tasks)):
+            obj = task_dict[tasks[i]]()
+            required_task_dict[tasks[i]] = obj.getTargetPos()
+
+        return required_task_dict
+
+    def refree_callback(self,msg):
+        pass
 
     def staticPlays():
-        curPlay = 0
+        curPlay = -1
         for play in staticPlays:
             if play.value == self.play:
                 curPlay = play.value
                 break
-        if curPlay != 0:
-            if curPlay == 1:
+        if curPlay > -1:
+            if curPlay == 0:
                 # FreeHomeKick
-                requiredTasks = ['BallHandler']  # add more task here
+                requiredTasks = ['BallHandler','Clearer','Marker','Marker','Defender']  # add more task here
                 tasks = self.intersection(requiredTasks, self.tasklist)
                 # task is dict, keyword -> tasks name, value -> their target point
                 tasks = self.targetPoints(tasks)
                 bots = self.availableBots()
                 return tasks, bots
+
         else:
             print("this static play is not available!!")
 
+def main():
+    global pub
+    object = GameAnalyser()    
+    rospy.Subscriber('/ref_data',Refree,obj.refree_callback,queue_size=1000)
+    rospy.Subscriber('/belief_state', BeliefState, obj.staticPlays, queue_size=1000)
+    rospy.spin()
+
+if __name__=='__main__':
+    # rospy.init_node('skill_py_node',anonymous=False)
+    main()
