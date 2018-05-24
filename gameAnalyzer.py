@@ -42,7 +42,3 @@ class gameAnalyzer():
                 return tasks, bots
         else:
             print("this static play is not available!!")
-
-
-
-        
