@@ -34,6 +34,22 @@ class optimalAssignment(object):
 					min_val = self.Mat[comb[-1][0]][comb[-1][1]]
 					bot_comb_index = bot_Comb.index(x)
 					task_comb_index = task_Comb.index(y)
+					s = 0
+					for t in comb:
+						s = s + self.Mat[t[0]][t[1]]
+					sum_of_val = s
+				elif min_val == self.Mat[comb[-1][0]][comb[-1][1]]:
+					s = 0
+					for t in comb:
+						s = s + self.Mat[t[0]][t[1]]
+					if s < sum_of_val:
+						bot_comb_index = bot_Comb.index(x)
+						task_comb_index = task_Comb.index(y)
+						sum_of_val = s
+					else:
+						pass
+				else:
+					pass
 		return zip( bot_Comb[bot_comb_index], task_Comb[task_comb_index] )
 					
 				
