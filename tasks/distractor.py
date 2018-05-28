@@ -7,11 +7,16 @@ from skills import sGoToBall
 from skills import sKickToPoint
 
 
-
+#VERY IMPORTANT -
+# take into consideration that there can be more than 2 Distractors
 
 class TDistractor(object):
 	def __init__(self, arg):
 		super(TDistractor, self).__init__()
 		self.arg = arg
-	def execute(self,state,bot_id,play_type=0):
-		pass
+	def getTargetPos(self,state,play=-1):
+		x = 0
+		y = 1300
+		finalPos = Vector2D(x,y)
+
+		return finalPos

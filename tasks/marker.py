@@ -5,24 +5,22 @@ from skills import skills_union
 from skills import sGoToPoint
 from skills import sGoToBall
 from skills import sKickToPoint
+import marker_fuzz
 
-
-
+#VERY IMPORTANT -
+# take into consideration that there can be more than 2 markers
 
 class TMarker(object):
-	def __init__(self, arg):
+	def __init__(self):
 		super(TMarker, self).__init__()
-		self.arg = arg
-	def execute(self,state,bot_id,play_type=0):
-		dis = 9999999
-    	nearest_bot = 0
-    	for i in xrange(len(state.awayPos)):
-    		if not marked[i]:
-    			dist=fabs(Vector2D(int(state.homePos[bot_id].x),int(state.homePos[bot_id].y)).dist(Vector2D(int(state.awayPos[i].x),int(state.awayPos[i].y))))
-    			if dist < dis :
-    				dist = dis
-    				nearest_bot = i
-		sParams = skills_union.SParam()
-		sParams.GoToPointP.x = state.homePos[bot_id].x
-        sParams.GoToPointP.y = state.homePos[bot_id].y 
-        sGoToPoint.execute(sParams, state, bot_id, pub)
+	def getTargetPos(self,state,play=-1):
+		#fuzzy logic for opponents
+        ballPos = Vector2D(int(state.ballPos.x), int(state.ballPos.y))
+        attacker_id = state.opp_bot_closest_to_ball
+        p = get_all(state,attacker_id)
+        x = (state.awayPos[attacker_id].x)*0.9 + (ballPos.x)*0.1
+        y = (state.awayPos[attacker_id].y)*0.9 + (ballPos.y)*0.1
+
+        finalPos = Vector2D(x,y)
+
+        return finalPos
