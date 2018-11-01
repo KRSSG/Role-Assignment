@@ -376,15 +376,3 @@ class gameAnalyzer():
                     tasks = self.targetPoints(state,requiredTasks)
                     bots = self.availableBots()
                     return tasks, bots
-
-
-
-
-
-
-
-
-
-
-
-
